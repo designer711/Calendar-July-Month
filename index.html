@@ -1,0 +1,1458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>Gratitude & Breathing Journey</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family: "Segoe UI", Arial, sans-serif;
+    min-height:100vh;
+    background:
+        radial-gradient(circle at top left, rgba(255,255,255,.9), transparent 35%),
+        linear-gradient(135deg,#dff7ef,#dcecff,#f3e5ff);
+    color:#243746;
+    overflow-x:hidden;
+}
+
+.app{
+    width:100%;
+    max-width:650px;
+    margin:auto;
+    padding:18px 14px 35px;
+}
+
+.header{
+    text-align:center;
+    padding:18px 10px 15px;
+}
+
+.header .emoji{
+    font-size:42px;
+    margin-bottom:5px;
+}
+
+.header h1{
+    font-size:29px;
+    color:#254c5c;
+    line-height:1.15;
+}
+
+.header p{
+    margin-top:8px;
+    font-size:14px;
+    color:#607783;
+    line-height:1.5;
+}
+
+.progress-wrap{
+    background:rgba(255,255,255,.65);
+    border-radius:20px;
+    padding:8px;
+    margin:10px 0 18px;
+    box-shadow:0 5px 18px rgba(60,90,100,.08);
+}
+
+.progress-bar{
+    height:8px;
+    border-radius:10px;
+    background:#dce8e8;
+    overflow:hidden;
+}
+
+.progress-fill{
+    height:100%;
+    width:25%;
+    border-radius:10px;
+    background:linear-gradient(90deg,#62b9a5,#709bd8);
+    transition:.4s ease;
+}
+
+.card{
+    background:rgba(255,255,255,.9);
+    border-radius:25px;
+    padding:22px 18px;
+    margin-bottom:17px;
+    box-shadow:0 10px 30px rgba(65,90,105,.10);
+    border:1px solid rgba(255,255,255,.8);
+}
+
+.step{
+    display:none;
+    animation:fadeIn .4s ease;
+}
+
+.step.active{
+    display:block;
+}
+
+@keyframes fadeIn{
+    from{
+        opacity:0;
+        transform:translateY(8px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+.step-number{
+    display:inline-flex;
+    width:38px;
+    height:38px;
+    align-items:center;
+    justify-content:center;
+    border-radius:50%;
+    background:#e5f5f0;
+    color:#398875;
+    font-weight:700;
+    margin-bottom:12px;
+}
+
+.question{
+    font-size:21px;
+    font-weight:700;
+    color:#294653;
+    line-height:1.3;
+    margin-bottom:8px;
+}
+
+.helper{
+    font-size:13px;
+    color:#72838b;
+    margin-bottom:15px;
+}
+
+textarea{
+    width:100%;
+    min-height:130px;
+    resize:none;
+    border:2px solid #e1ebeb;
+    border-radius:17px;
+    padding:15px;
+    font-family:inherit;
+    font-size:16px;
+    color:#294653;
+    outline:none;
+    background:#fbfefe;
+    transition:.25s;
+}
+
+textarea:focus{
+    border-color:#75bcae;
+    box-shadow:0 0 0 4px rgba(117,188,174,.12);
+}
+
+.counter{
+    text-align:right;
+    font-size:11px;
+    color:#94a3a9;
+    margin-top:5px;
+}
+
+.btn-row{
+    display:flex;
+    gap:10px;
+    margin-top:17px;
+}
+
+.btn{
+    border:none;
+    border-radius:15px;
+    padding:14px 17px;
+    font-size:15px;
+    font-weight:700;
+    cursor:pointer;
+    transition:.2s;
+    font-family:inherit;
+    -webkit-tap-highlight-color:transparent;
+}
+
+.btn:active{
+    transform:scale(.97);
+}
+
+.btn-primary{
+    flex:1;
+    color:white;
+    background:linear-gradient(135deg,#59ad99,#628fc9);
+    box-shadow:0 7px 18px rgba(80,150,145,.22);
+}
+
+.btn-secondary{
+    background:#edf4f4;
+    color:#52707a;
+}
+
+.btn:disabled{
+    opacity:.45;
+    cursor:not-allowed;
+}
+
+/* Breathing section */
+
+.breath-title{
+    text-align:center;
+    font-size:24px;
+    color:#294d59;
+    margin-bottom:7px;
+}
+
+.breath-subtitle{
+    text-align:center;
+    font-size:13px;
+    color:#71838a;
+    line-height:1.5;
+}
+
+.duration-selection{
+    display:flex;
+    gap:10px;
+    margin:20px 0;
+}
+
+.duration-btn{
+    flex:1;
+    padding:14px 8px;
+    border-radius:15px;
+    border:2px solid #dce9e7;
+    background:white;
+    color:#557078;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.duration-btn.selected{
+    background:#e4f5f0;
+    border-color:#6ab49f;
+    color:#367d6d;
+}
+
+.breath-area{
+    text-align:center;
+    padding:8px 0 15px;
+}
+
+.breath-circle{
+    width:175px;
+    height:175px;
+    margin:15px auto 18px;
+    border-radius:50%;
+    background:
+        radial-gradient(circle at 35% 30%,#ffffff,#c9eee4 45%,#8bc5bb);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:
+        0 0 0 12px rgba(130,194,183,.12),
+        0 15px 35px rgba(76,133,127,.18);
+    transition:
+        transform 4s ease-in-out,
+        box-shadow 4s ease-in-out;
+}
+
+.breath-circle.inhale{
+    transform:scale(1.18);
+    box-shadow:
+        0 0 0 20px rgba(130,194,183,.12),
+        0 20px 45px rgba(76,133,127,.22);
+}
+
+.breath-circle.hold{
+    transform:scale(1.18);
+}
+
+.breath-circle.exhale{
+    transform:scale(.82);
+}
+
+.breath-text{
+    font-size:21px;
+    font-weight:800;
+    color:#356c67;
+}
+
+.timer{
+    font-size:31px;
+    font-weight:800;
+    color:#365864;
+    margin-bottom:5px;
+}
+
+.phase{
+    font-size:14px;
+    color:#75878d;
+    min-height:21px;
+}
+
+.instruction{
+    margin:12px auto;
+    padding:12px;
+    border-radius:13px;
+    background:#f2f8f7;
+    color:#5d7479;
+    font-size:13px;
+    line-height:1.5;
+}
+
+.video-btn{
+    width:100%;
+    margin-top:5px;
+    background:#f5eeee;
+    color:#a45d5d;
+}
+
+.message{
+    text-align:center;
+    background:linear-gradient(135deg,#eefaf6,#edf3ff);
+    border-radius:20px;
+    padding:22px 15px;
+    margin-top:18px;
+    display:none;
+    animation:fadeIn .5s ease;
+}
+
+.message .big{
+    font-size:32px;
+    margin-bottom:8px;
+}
+
+.message h3{
+    color:#386d68;
+    font-size:21px;
+    line-height:1.3;
+}
+
+.message p{
+    margin-top:8px;
+    font-size:13px;
+    color:#6e8086;
+}
+
+/* Profile */
+
+.profile-title{
+    font-size:22px;
+    color:#294653;
+    margin-bottom:7px;
+}
+
+.profile-sub{
+    font-size:13px;
+    color:#75868c;
+    margin-bottom:18px;
+}
+
+.input-group{
+    margin-bottom:13px;
+}
+
+.input-group label{
+    display:block;
+    font-size:13px;
+    font-weight:700;
+    color:#557078;
+    margin-bottom:6px;
+}
+
+.input-group input{
+    width:100%;
+    border:2px solid #e1ebeb;
+    background:#fbfefe;
+    border-radius:14px;
+    padding:13px;
+    font-size:15px;
+    font-family:inherit;
+    outline:none;
+}
+
+.input-group input:focus{
+    border-color:#76b8a8;
+}
+
+/* Certificate */
+
+.certificate-section{
+    display:none;
+}
+
+.certificate-preview{
+    position:relative;
+    width:100%;
+    aspect-ratio:1.414 / 1;
+    background:
+        radial-gradient(circle at 15% 15%,rgba(255,255,255,.95),transparent 30%),
+        linear-gradient(135deg,#f8fffc,#eef7ff);
+    border:7px solid #b8d8d0;
+    border-radius:12px;
+    overflow:hidden;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:20px;
+}
+
+.cert-inner{
+    width:100%;
+    height:100%;
+    border:2px solid #8bb8ae;
+    border-radius:8px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    padding:15px;
+}
+
+.cert-small{
+    font-size:11px;
+    letter-spacing:2px;
+    color:#6b8886;
+    font-weight:700;
+}
+
+.cert-title{
+    font-size:clamp(20px,5vw,32px);
+    color:#315d61;
+    font-weight:800;
+    margin:7px 0;
+}
+
+.cert-name{
+    font-size:clamp(17px,4vw,27px);
+    font-weight:800;
+    color:#3f7c71;
+    max-width:90%;
+    overflow-wrap:anywhere;
+}
+
+.cert-line{
+    width:65%;
+    height:1px;
+    background:#b4cfc9;
+    margin:7px 0;
+}
+
+.cert-info{
+    font-size:11px;
+    color:#708186;
+}
+
+.cert-quote{
+    margin-top:10px;
+    font-size:clamp(10px,2.5vw,14px);
+    color:#667b81;
+    font-style:italic;
+}
+
+.footer{
+    text-align:center;
+    font-size:11px;
+    color:#819197;
+    padding:5px 10px 20px;
+}
+
+.toast{
+    position:fixed;
+    bottom:20px;
+    left:50%;
+    transform:translateX(-50%) translateY(100px);
+    background:#294653;
+    color:white;
+    padding:12px 18px;
+    border-radius:13px;
+    font-size:13px;
+    z-index:100;
+    transition:.3s;
+    box-shadow:0 8px 25px rgba(0,0,0,.18);
+    max-width:90%;
+    text-align:center;
+}
+
+.toast.show{
+    transform:translateX(-50%) translateY(0);
+}
+
+@media(max-width:420px){
+    .app{
+        padding:12px 10px 28px;
+    }
+
+    .header h1{
+        font-size:25px;
+    }
+
+    .card{
+        padding:19px 15px;
+        border-radius:21px;
+    }
+
+    .question{
+        font-size:19px;
+    }
+
+    .breath-circle{
+        width:155px;
+        height:155px;
+    }
+
+    .btn{
+        padding:13px 12px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <header class="header">
+        <div class="emoji">🌿</div>
+        <h1>My Gratitude & Breathing Journey</h1>
+        <p>A few peaceful minutes to notice the good things in your day and calm your mind.</p>
+    </header>
+
+    <div class="progress-wrap">
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+    </div>
+
+
+    <!-- STEP 1 -->
+    <section class="card step active" id="step1">
+
+        <span class="step-number">1</span>
+
+        <div class="question">
+            Something good that happened today 🌟
+        </div>
+
+        <div class="helper">
+            Think of one small or big moment that made your day better.
+        </div>
+
+        <textarea
+            id="answer1"
+            maxlength="300"
+            placeholder="Write your thoughts here..."
+            oninput="updateCounter(1)">
+        </textarea>
+
+        <div class="counter">
+            <span id="count1">0</span>/300
+        </div>
+
+        <div class="btn-row">
+            <button class="btn btn-primary" onclick="nextStep(1)">
+                Continue →
+            </button>
+        </div>
+    </section>
+
+
+    <!-- STEP 2 -->
+    <section class="card step" id="step2">
+
+        <span class="step-number">2</span>
+
+        <div class="question">
+            Something I enjoyed today 😊
+        </div>
+
+        <div class="helper">
+            It could be a meal, a game, a conversation, learning something new, or anything else.
+        </div>
+
+        <textarea
+            id="answer2"
+            maxlength="300"
+            placeholder="What did you enjoy today?"
+            oninput="updateCounter(2)">
+        </textarea>
+
+        <div class="counter">
+            <span id="count2">0</span>/300
+        </div>
+
+        <div class="btn-row">
+            <button class="btn btn-secondary" onclick="previousStep(2)">
+                ← Back
+            </button>
+
+            <button class="btn btn-primary" onclick="nextStep(2)">
+                Continue →
+            </button>
+        </div>
+    </section>
+
+
+    <!-- STEP 3 -->
+    <section class="card step" id="step3">
+
+        <span class="step-number">3</span>
+
+        <div class="question">
+            Someone who made my day better 💛
+        </div>
+
+        <div class="helper">
+            Think of someone who helped, encouraged, supported or simply made you smile.
+        </div>
+
+        <textarea
+            id="answer3"
+            maxlength="300"
+            placeholder="Write about them..."
+            oninput="updateCounter(3)">
+        </textarea>
+
+        <div class="counter">
+            <span id="count3">0</span>/300
+        </div>
+
+        <div class="btn-row">
+            <button class="btn btn-secondary" onclick="previousStep(3)">
+                ← Back
+            </button>
+
+            <button class="btn btn-primary" onclick="goToBreathing()">
+                Begin Breathing 🌿
+            </button>
+        </div>
+    </section>
+
+
+    <!-- BREATHING -->
+    <section class="card step" id="step4">
+
+        <div class="breath-title">
+            Time to Breathe 🌬️
+        </div>
+
+        <div class="breath-subtitle">
+            Find a comfortable position. Relax your shoulders and gently follow the circle.
+        </div>
+
+        <div class="duration-selection">
+            <button class="duration-btn selected" id="oneMinute" onclick="selectDuration(1)">
+                1 MINUTE
+            </button>
+
+            <button class="duration-btn" id="threeMinutes" onclick="selectDuration(3)">
+                3 MINUTES
+            </button>
+        </div>
+
+        <div class="breath-area">
+
+            <div class="timer" id="timer">
+                1:00
+            </div>
+
+            <div class="breath-circle" id="breathCircle">
+                <div class="breath-text" id="breathText">
+                    Ready?
+                </div>
+            </div>
+
+            <div class="phase" id="phase">
+                Press Start when you are ready.
+            </div>
+
+            <div class="instruction">
+                <strong>Breathe in</strong> → <strong>Hold</strong> → <strong>Breathe out</strong><br>
+                Let your breathing stay gentle and comfortable.
+            </div>
+
+            <button class="btn btn-primary" id="startBreathingBtn" onclick="startBreathing()">
+                ▶ Start Breathing
+            </button>
+
+            <button class="btn video-btn" onclick="openBreathingVideo()">
+                ▶ Watch Guided Breathing Video
+            </button>
+
+        </div>
+
+        <div class="message" id="finalMessage">
+
+            <div class="big">🌿✨</div>
+
+            <h3>
+                Let’s wake up tomorrow calmer and happier.
+            </h3>
+
+            <p>
+                You took a few moments today to pause, breathe and appreciate the good around you.
+            </p>
+
+            <button
+                class="btn btn-primary"
+                style="margin-top:15px;width:100%;"
+                onclick="showProfile()">
+                Get My Certificate 🎓
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- PROFILE -->
+    <section class="card step" id="step5">
+
+        <span class="step-number">✓</span>
+
+        <div class="profile-title">
+            Complete Your Certificate 🎓
+        </div>
+
+        <div class="profile-sub">
+            Enter your details to create your personalised wellness certificate.
+        </div>
+
+        <div class="input-group">
+            <label>Your Name</label>
+            <input
+                type="text"
+                id="studentName"
+                placeholder="Enter your full name"
+                maxlength="60">
+        </div>
+
+        <div class="input-group">
+            <label>Class / Profile</label>
+            <input
+                type="text"
+                id="studentClass"
+                placeholder="Example: Class 5 / Teacher / Professional"
+                maxlength="50">
+        </div>
+
+        <button
+            class="btn btn-primary"
+            style="width:100%;margin-top:5px;"
+            onclick="generateCertificate()">
+            ✨ Create My Certificate
+        </button>
+
+    </section>
+
+
+    <!-- CERTIFICATE -->
+    <section class="card certificate-section" id="certificateSection">
+
+        <div class="profile-title" style="text-align:center;">
+            Your Wellness Certificate 🌿
+        </div>
+
+        <div class="certificate-preview" id="certificate">
+
+            <div class="cert-inner">
+
+                <div class="cert-small">
+                    WELLNESS & REFLECTION ACTIVITY
+                </div>
+
+                <div class="cert-title">
+                    Certificate of Calm
+                </div>
+
+                <div class="cert-small">
+                    PROUDLY PRESENTED TO
+                </div>
+
+                <div class="cert-name" id="certName">
+                    Your Name
+                </div>
+
+                <div class="cert-line"></div>
+
+                <div class="cert-info" id="certClass">
+                    Class / Profile
+                </div>
+
+                <div class="cert-quote">
+                    “A calm mind notices the little joys.”
+                </div>
+
+                <div style="font-size:27px;margin-top:9px;">
+                    🌿 ☁️ ✨
+                </div>
+
+            </div>
+
+        </div>
+
+        <button
+            class="btn btn-primary"
+            style="width:100%;margin-top:16px;"
+            onclick="downloadCertificate()">
+            📥 Download Certificate JPG
+        </button>
+
+        <button
+            class="btn btn-secondary"
+            style="width:100%;margin-top:9px;"
+            onclick="restartActivity()">
+            🔄 Start Again
+        </button>
+
+    </section>
+
+
+    <div class="footer">
+        Take a breath. Notice the good. Be kind to yourself. 🌱
+    </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+
+<script>
+
+/* -------------------------
+   BASIC ACTIVITY NAVIGATION
+------------------------- */
+
+let currentStep = 1;
+
+function showStep(step){
+
+    document.querySelectorAll(".step").forEach(function(el){
+        el.classList.remove("active");
+    });
+
+    const target = document.getElementById("step" + step);
+
+    if(target){
+        target.classList.add("active");
+    }
+
+    currentStep = step;
+
+    updateProgress(step);
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+}
+
+
+function updateProgress(step){
+
+    let percentage = 25;
+
+    if(step === 1) percentage = 20;
+    if(step === 2) percentage = 40;
+    if(step === 3) percentage = 60;
+    if(step === 4) percentage = 80;
+    if(step === 5) percentage = 100;
+
+    document.getElementById("progressFill").style.width = percentage + "%";
+}
+
+
+function nextStep(step){
+
+    const input = document.getElementById("answer" + step);
+
+    if(!input.value.trim()){
+
+        showToast("Take a moment and write something first. 🌿");
+
+        input.focus();
+
+        return;
+    }
+
+    showStep(step + 1);
+}
+
+
+function previousStep(step){
+    showStep(step - 1);
+}
+
+
+function updateCounter(number){
+
+    const textarea = document.getElementById("answer" + number);
+    const counter = document.getElementById("count" + number);
+
+    counter.textContent = textarea.value.length;
+}
+
+
+function goToBreathing(){
+
+    const input = document.getElementById("answer3");
+
+    if(!input.value.trim()){
+
+        showToast("Please complete this reflection first. 💛");
+
+        input.focus();
+
+        return;
+    }
+
+    showStep(4);
+
+    resetBreathing();
+}
+
+
+/* -------------------------
+   BREATHING EXERCISE
+------------------------- */
+
+let selectedMinutes = 1;
+let totalSeconds = 60;
+let remainingSeconds = 60;
+
+let breathingRunning = false;
+let breathingInterval = null;
+let phaseTimeout = null;
+
+
+function selectDuration(minutes){
+
+    if(breathingRunning) return;
+
+    selectedMinutes = minutes;
+
+    document.getElementById("oneMinute").classList.remove("selected");
+    document.getElementById("threeMinutes").classList.remove("selected");
+
+    if(minutes === 1){
+        document.getElementById("oneMinute").classList.add("selected");
+    }else{
+        document.getElementById("threeMinutes").classList.add("selected");
+    }
+
+    totalSeconds = minutes * 60;
+    remainingSeconds = totalSeconds;
+
+    updateTimer();
+
+    document.getElementById("phase").textContent =
+        "Press Start when you are ready.";
+
+    document.getElementById("breathText").textContent =
+        "Ready?";
+
+    document.getElementById("finalMessage").style.display = "none";
+}
+
+
+function updateTimer(){
+
+    const mins = Math.floor(remainingSeconds / 60);
+    const secs = remainingSeconds % 60;
+
+    document.getElementById("timer").textContent =
+        mins + ":" + String(secs).padStart(2,"0");
+}
+
+
+function startBreathing(){
+
+    if(breathingRunning) return;
+
+    breathingRunning = true;
+
+    document.getElementById("startBreathingBtn").disabled = true;
+    document.getElementById("startBreathingBtn").textContent =
+        "🌿 Breathing...";
+
+    remainingSeconds = totalSeconds;
+
+    updateTimer();
+
+    runBreathingCycle();
+
+    breathingInterval = setInterval(function(){
+
+        remainingSeconds--;
+
+        updateTimer();
+
+        if(remainingSeconds <= 0){
+
+            finishBreathing();
+
+        }
+
+    },1000);
+}
+
+
+function runBreathingCycle(){
+
+    if(!breathingRunning) return;
+
+    const circle = document.getElementById("breathCircle");
+    const text = document.getElementById("breathText");
+    const phase = document.getElementById("phase");
+
+    circle.className = "breath-circle inhale";
+
+    text.textContent = "Breathe In";
+    phase.textContent = "Slowly breathe in through your nose.";
+
+    phaseTimeout = setTimeout(function(){
+
+        if(!breathingRunning) return;
+
+        circle.className = "breath-circle hold";
+
+        text.textContent = "Hold";
+        phase.textContent = "Gently hold your breath.";
+
+        phaseTimeout = setTimeout(function(){
+
+            if(!breathingRunning) return;
+
+            circle.className = "breath-circle exhale";
+
+            text.textContent = "Breathe Out";
+            phase.textContent = "Slowly breathe out and relax.";
+
+            phaseTimeout = setTimeout(function(){
+
+                if(breathingRunning){
+                    runBreathingCycle();
+                }
+
+            },4000);
+
+        },3000);
+
+    },4000);
+}
+
+
+function finishBreathing(){
+
+    breathingRunning = false;
+
+    clearInterval(breathingInterval);
+    clearTimeout(phaseTimeout);
+
+    remainingSeconds = 0;
+    updateTimer();
+
+    const circle = document.getElementById("breathCircle");
+
+    circle.className = "breath-circle";
+
+    document.getElementById("breathText").textContent =
+        "Complete ✨";
+
+    document.getElementById("phase").textContent =
+        "Beautifully done. Take one more gentle breath.";
+
+    document.getElementById("startBreathingBtn").disabled = false;
+
+    document.getElementById("startBreathingBtn").textContent =
+        "✓ Breathing Complete";
+
+    document.getElementById("finalMessage").style.display =
+        "block";
+
+    setTimeout(function(){
+
+        document.getElementById("finalMessage").scrollIntoView({
+            behavior:"smooth",
+            block:"center"
+        });
+
+    },300);
+}
+
+
+function resetBreathing(){
+
+    clearInterval(breathingInterval);
+    clearTimeout(phaseTimeout);
+
+    breathingRunning = false;
+
+    totalSeconds = selectedMinutes * 60;
+    remainingSeconds = totalSeconds;
+
+    updateTimer();
+
+    document.getElementById("breathCircle").className =
+        "breath-circle";
+
+    document.getElementById("breathText").textContent =
+        "Ready?";
+
+    document.getElementById("phase").textContent =
+        "Press Start when you are ready.";
+
+    document.getElementById("startBreathingBtn").disabled =
+        false;
+
+    document.getElementById("startBreathingBtn").textContent =
+        "▶ Start Breathing";
+
+    document.getElementById("finalMessage").style.display =
+        "none";
+}
+
+
+/* -------------------------
+   VIDEO
+------------------------- */
+
+function openBreathingVideo(){
+
+    window.open(
+        "https://youtube.com/shorts/8SkhiNmk614?si=f1WI6wY_BHmZo72K",
+        "_blank",
+        "noopener,noreferrer"
+    );
+}
+
+
+/* -------------------------
+   PROFILE + CERTIFICATE
+------------------------- */
+
+function showProfile(){
+
+    showStep(5);
+
+    document.getElementById("studentName").focus();
+}
+
+
+function generateCertificate(){
+
+    const name =
+        document.getElementById("studentName").value.trim();
+
+    const profile =
+        document.getElementById("studentClass").value.trim();
+
+    if(!name){
+
+        showToast("Please enter your name. 😊");
+
+        document.getElementById("studentName").focus();
+
+        return;
+    }
+
+    if(!profile){
+
+        showToast("Please enter your Class / Profile.");
+
+        document.getElementById("studentClass").focus();
+
+        return;
+    }
+
+    document.getElementById("certName").textContent =
+        name;
+
+    document.getElementById("certClass").textContent =
+        profile;
+
+    document.getElementById("certificateSection").style.display =
+        "block";
+
+    document.getElementById("certificateSection").scrollIntoView({
+        behavior:"smooth",
+        block:"start"
+    });
+}
+
+
+/* -------------------------
+   JPG CERTIFICATE DOWNLOAD
+   Uses Canvas - No External Library
+------------------------- */
+
+function downloadCertificate(){
+
+    const name =
+        document.getElementById("studentName").value.trim();
+
+    const profile =
+        document.getElementById("studentClass").value.trim();
+
+    if(!name){
+
+        showToast("Please enter your name first.");
+
+        return;
+    }
+
+    const canvas = document.createElement("canvas");
+
+    canvas.width = 1600;
+    canvas.height = 1131;
+
+    const ctx = canvas.getContext("2d");
+
+    /* Background */
+
+    const gradient =
+        ctx.createLinearGradient(0,0,1600,1131);
+
+    gradient.addColorStop(0,"#f8fffc");
+    gradient.addColorStop(1,"#eef7ff");
+
+    ctx.fillStyle = gradient;
+
+    ctx.fillRect(0,0,1600,1131);
+
+
+    /* Decorative circles */
+
+    ctx.globalAlpha = .35;
+
+    ctx.beginPath();
+    ctx.arc(120,120,180,0,Math.PI*2);
+    ctx.fillStyle = "#ccebe2";
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(1490,1010,210,0,Math.PI*2);
+    ctx.fillStyle = "#d8e7f5";
+    ctx.fill();
+
+    ctx.globalAlpha = 1;
+
+
+    /* Outer border */
+
+    ctx.strokeStyle = "#9fc9bf";
+    ctx.lineWidth = 22;
+
+    ctx.strokeRect(
+        25,
+        25,
+        1550,
+        1081
+    );
+
+
+    /* Inner border */
+
+    ctx.strokeStyle = "#6fa79b";
+    ctx.lineWidth = 4;
+
+    ctx.strokeRect(
+        70,
+        70,
+        1460,
+        991
+    );
+
+
+    ctx.textAlign = "center";
+
+
+    /* Header */
+
+    ctx.fillStyle = "#6b8886";
+    ctx.font = "bold 24px Arial";
+
+    ctx.fillText(
+        "WELLNESS & REFLECTION ACTIVITY",
+        800,
+        190
+    );
+
+
+    /* Certificate title */
+
+    ctx.fillStyle = "#315d61";
+    ctx.font = "bold 68px Arial";
+
+    ctx.fillText(
+        "CERTIFICATE OF CALM",
+        800,
+        310
+    );
+
+
+    ctx.fillStyle = "#6b8886";
+    ctx.font = "22px Arial";
+
+    ctx.fillText(
+        "PROUDLY PRESENTED TO",
+        800,
+        385
+    );
+
+
+    /* Name */
+
+    ctx.fillStyle = "#3f7c71";
+
+    let nameFont = 58;
+
+    if(name.length > 25){
+        nameFont = 46;
+    }
+
+    if(name.length > 38){
+        nameFont = 38;
+    }
+
+    ctx.font = "bold " + nameFont + "px Arial";
+
+    ctx.fillText(
+        name,
+        800,
+        475
+    );
+
+
+    /* Line */
+
+    ctx.strokeStyle = "#b4cfc9";
+    ctx.lineWidth = 3;
+
+    ctx.beginPath();
+    ctx.moveTo(500,520);
+    ctx.lineTo(1100,520);
+    ctx.stroke();
+
+
+    /* Profile */
+
+    ctx.fillStyle = "#708186";
+    ctx.font = "26px Arial";
+
+    ctx.fillText(
+        profile,
+        800,
+        575
+    );
+
+
+    /* Quote */
+
+    ctx.fillStyle = "#667b81";
+    ctx.font = "italic 26px Georgia";
+
+    ctx.fillText(
+        "“A calm mind notices the little joys.”",
+        800,
+        700
+    );
+
+
+    /* Icons */
+
+    ctx.font = "52px Arial";
+
+    ctx.fillText(
+        "🌿   ☁️   ✨",
+        800,
+        805
+    );
+
+
+    /* Footer */
+
+    ctx.fillStyle = "#819197";
+    ctx.font = "18px Arial";
+
+    ctx.fillText(
+        "Gratitude • Reflection • Mindful Breathing",
+        800,
+        930
+    );
+
+
+    /* Download */
+
+    const link = document.createElement("a");
+
+    link.download =
+        "Certificate_of_Calm_" +
+        name.replace(/[^a-z0-9]/gi,"_") +
+        ".jpg";
+
+    link.href =
+        canvas.toDataURL("image/jpeg",0.95);
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    document.body.removeChild(link);
+
+    showToast("Your certificate has been downloaded! 🎓✨");
+}
+
+
+/* -------------------------
+   RESTART
+------------------------- */
+
+function restartActivity(){
+
+    document.getElementById("answer1").value = "";
+    document.getElementById("answer2").value = "";
+    document.getElementById("answer3").value = "";
+
+    document.getElementById("count1").textContent = "0";
+    document.getElementById("count2").textContent = "0";
+    document.getElementById("count3").textContent = "0";
+
+    document.getElementById("studentName").value = "";
+    document.getElementById("studentClass").value = "";
+
+    document.getElementById("certificateSection").style.display =
+        "none";
+
+    selectDuration(1);
+
+    showStep(1);
+}
+
+
+/* -------------------------
+   TOAST
+------------------------- */
+
+function showToast(message){
+
+    const toast = document.getElementById("toast");
+
+    toast.textContent = message;
+
+    toast.classList.add("show");
+
+    setTimeout(function(){
+        toast.classList.remove("show");
+    },2500);
+}
+
+</script>
+
+</body>
+</html>
